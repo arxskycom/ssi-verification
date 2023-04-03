@@ -1,0 +1,35 @@
+{
+    "python.defaultInterpreterPath": "./venv/bin/python",
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 500,
+    "files.exclude": {
+        "venv": true,
+        "**/*.sqlite3": true,
+        "**/*.pyc": true,
+        "**/__pycache__": true,
+        "**/node_modules/**": true,
+        ".vscode/": true,
+        "**/.ipynb_checkpoints/": true,
+        "deploy/": true,
+        "client/dist/": true,
+        "client/web-build/": true,
+    },
+    "editor.fontSize": 12,
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/**": true,
+        "**/.hg/store/**": true
+    },
+    "editor.bracketPairColorization.enabled": false,
+    "editor.stickyScroll.enabled": true,
+    "[javascript]": {
+        "editor.tabSize": 2
+    },
+    "[typescript]": {
+        "editor.tabSize": 2
+    },
+    "[python]": {
+        "editor.tabSize": 4
+    }    
+} 
