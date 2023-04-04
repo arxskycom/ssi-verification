@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+    <h3>{{ payload.name }}</h3>
+    <p>Public Key: {{ payload.public_key }}</p>
+    <p>Twitter: {{ payload.twitter }}</p>
+    <ul>
+        {% for sig in signatures %}
+            <li>{{ sig.signer_name }} {{ sig.signer_public_key }}</li>
+        {% endfor %}
+    </ul>
+    <div><a href="./{{ payload.public_key }}.json">Raw JSON</a></div>
+{% endblock %}

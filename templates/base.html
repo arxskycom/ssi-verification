@@ -1,0 +1,19 @@
+<html>
+<head>
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body class="bg-light-gray flex flex-row justify-center">
+  <div class="flex-grow-1 mw6 flex flex-column justify-center">
+    <div class="ma3 pa3 w-full bg-light-blue br2 shadow-3">
+      <div class="f1">{{ title }}</div>
+      {% block content %}{% endblock %}
+    </div>
+    <div class="flex-grow-1"></div>
+  </div>
+</body>
+</html>
+
+
+

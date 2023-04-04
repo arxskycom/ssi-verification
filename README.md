@@ -43,14 +43,14 @@ python main.py generate_keypair -n "Alice Roberts" -o alice.priv.json
 
 # Create object with Alice's public key and twitter handle
 # Note: if you don't have `jq` installed, you can just copy the public key from the file
-echo '{"name": "Alice Roberts", "twitter": "@alice", "public_key": '`jq .public_key alice.priv.json`'}' > alice.to.sign.json
+echo '{"name": "Alice Allison", "twitter": "@alice", "public_key": '`jq .public_key alice.priv.json`'}' > alice.to.sign.json
 
 # Sign the object with Alice's private key
-python main.py sign -k alice.priv.json -ts alice.to.sign.json -o alice.signed.json
+python main.py sign -k alice.priv.json -i alice.to.sign.json -o alice.signed.json
 
 # Sign the object with NY Times' private key
-python main.py sign -k nytimes.priv.json -ts alice.signed.json -o alice.signed.final.json
+python main.py sign -k nytimes.priv.json -i alice.signed.json -o alice.signed.json
 
 # Verify signature?
-python main.py verify -f alice.signed.final.json
+python main.py verify -i alice.signed.json
 ```

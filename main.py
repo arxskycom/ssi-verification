@@ -1,8 +1,6 @@
 import argparse
-import json
-import os
 import base58
-import datetime
+import json
 
 import nacl.encoding
 import nacl.signing
@@ -18,16 +16,16 @@ def load_object_from_file(filename):
     with open(filename, 'r') as f:
         return json.loads(f.read())
 
-def generate_keypair(output, name):
+def generate_keypair(output, name, type):
     # Generate a new signing keypair
     signing_key = nacl.signing.SigningKey.generate()
     verify_key = signing_key.verify_key
 
     # Serialize the keypair to JSON
     serialized_keypair = {
-        "generated_date": datetime.datetime.now().isoformat(),
         "private_key": to_base58(signing_key.encode()),
         "public_key": to_base58(verify_key.encode()),
+        "type": type
     }
     if name:
         serialized_keypair['name'] = name
@@ -44,6 +42,12 @@ def generate_keypair(output, name):
 
 def sign_object(key_path, object_to_sign_path, output_path):
     payload = load_object_from_file(object_to_sign_path)
+    if "signatures" in payload and "payload" in payload: # been already signed so we'll be adding signatures
+        signatures = payload["signatures"]
+        payload = payload["payload"]
+    else: # has not been signed so we're starting a new list of signatures
+        signatures = []
+
     # Deserialize the JSON private key
     serialized_keypair = load_object_from_file(key_path)
 
@@ -54,10 +58,16 @@ def sign_object(key_path, object_to_sign_path, output_path):
     # Sign the payload and serialize the result to JSON
     payload_encoded = json.dumps(payload, sort_keys=True).encode()
     signed_payload = signing_key.sign(payload_encoded)
+
+    signatures.append({
+        "signature": to_base58(signed_payload.signature),
+        "signer_public_key": serialized_keypair["public_key"],
+        "signer_name": serialized_keypair["name"],
+        "type": serialized_keypair["type"]
+    })
     serialized_signed_payload = {
         "payload": payload,
-        "signature": to_base58(signed_payload.signature),
-        "public_key": serialized_keypair["public_key"],
+        "signatures": signatures
     }
     save_object_to_file(output_path, serialized_signed_payload)
     return serialized_signed_payload
@@ -65,18 +75,21 @@ def sign_object(key_path, object_to_sign_path, output_path):
 
 def verify_object(path):
     serialized_signed_payload_json = load_object_from_file(path)
-    # Extract the public key from the signed payload
-    public_key_bytes = from_base58(serialized_signed_payload_json["public_key"])
-    verify_key = nacl.signing.VerifyKey(public_key_bytes)
 
-    # Serialize the payload and verify the signature
+    # get payload
     payload_encoded = json.dumps(serialized_signed_payload_json["payload"], sort_keys=True).encode()
-    signature_bytes = from_base58(serialized_signed_payload_json["signature"])
-    try:
-        verify_key.verify(payload_encoded, signature_bytes)
-        return True
-    except nacl.exceptions.BadSignatureError:
-        return False
+
+    # one or more signatures
+    signatures = serialized_signed_payload_json["signatures"]
+    for signature in signatures:
+        signature_bytes = from_base58(signature["signature"])
+        public_key_bytes = from_base58(signature["signer_public_key"])
+        verify_key = nacl.signing.VerifyKey(public_key_bytes)
+        try:
+            verify_key.verify(payload_encoded, signature_bytes)
+        except nacl.exceptions.BadSignatureError:
+            return False
+    return True
 
 
 if __name__ == "__main__":
@@ -93,13 +106,17 @@ if __name__ == "__main__":
     generate_parser.add_argument("-o", "--output", type=str,
                                  help="Path to save the keypair",
                                  required=True)
+    # store whether organization or individual
+    generate_parser.add_argument("-t", "--type", type=str,
+                                 help="Type of keypair (organization or individual)",
+                                 default="individual")
 
     sign_parser = sp.add_parser("sign",
                                 help="Sign an object with a private key.")
     sign_parser.add_argument("-k", "--key-path", type=str,
                              help="The path of private key",
                              required=True)
-    sign_parser.add_argument("-ts", "--to-sign-path", type=str,
+    sign_parser.add_argument("-i", "--input", type=str,
                              help="Path of object to sign",
                              required=True)
     sign_parser.add_argument("-o", "--output", type=str,
@@ -108,22 +125,19 @@ if __name__ == "__main__":
 
     verify_parser = sp.add_parser("verify",
                                   help="Verify a signed object.")
-    verify_parser.add_argument("-f", "--object-to-verify", type=str,
+    verify_parser.add_argument("-i", "--input", type=str,
                                help="The path of signed object")
 
     args = parser.parse_args()
 
     if args.command == "generate_keypair":
-        serialized_keypair = generate_keypair(args.output, args.name)
+        serialized_keypair = generate_keypair(args.output, args.name, args.type)
         print(json.dumps(serialized_keypair, indent=4))
-    # elif args.command == "prepare_public_cert":
-    #     serialized_prepared_public_cert = prepare_public_cert(args.name)
-    #     print(json.dumps(serialized_prepared_public_cert, indent=4))
     elif args.command == "sign":
-        serialized_signed_payload_json = sign_object(args.key_path, args.to_sign_path, args.output)
+        serialized_signed_payload_json = sign_object(args.key_path, args.input, args.output)
         print(json.dumps(serialized_signed_payload_json, indent=4))
     elif args.command == "verify":
-        if verify_object(args.object_to_verify):
-            print("Signature is valid.")
+        if verify_object(args.input):
+            print("Success: valid signature(s)")
         else:
-            print("Signature is invalid.")
+            print("Error: invalid signature(s)")
