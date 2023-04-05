@@ -41,12 +41,13 @@ def generate_keypair(output, name, type):
 
 
 def sign_object(key_path, object_to_sign_path, output_path):
-    payload = load_object_from_file(object_to_sign_path)
-    if "signatures" in payload and "payload" in payload: # been already signed so we'll be adding signatures
-        signatures = payload["signatures"]
-        payload = payload["payload"]
+    obj = load_object_from_file(object_to_sign_path)
+    if "signatures" in obj and "payload" in obj: # been already signed so we'll be adding signatures
+        signatures = obj["signatures"]
+        payload = str(obj["payload"])
     else: # has not been signed so we're starting a new list of signatures
         signatures = []
+        payload = json.dumps(obj)
 
     # Deserialize the JSON private key
     serialized_keypair = load_object_from_file(key_path)
@@ -56,7 +57,7 @@ def sign_object(key_path, object_to_sign_path, output_path):
     signing_key = nacl.signing.SigningKey(signing_key_bytes)
 
     # Sign the payload and serialize the result to JSON
-    payload_encoded = json.dumps(payload, sort_keys=True).encode()
+    payload_encoded = payload.encode()
     signed_payload = signing_key.sign(payload_encoded)
 
     signatures.append({
@@ -77,8 +78,7 @@ def verify_object(path):
     serialized_signed_payload_json = load_object_from_file(path)
 
     # get payload
-    payload_encoded = json.dumps(serialized_signed_payload_json["payload"], sort_keys=True).encode()
-
+    payload_encoded = serialized_signed_payload_json["payload"].encode()
     # one or more signatures
     signatures = serialized_signed_payload_json["signatures"]
     for signature in signatures:

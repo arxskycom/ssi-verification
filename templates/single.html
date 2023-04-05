@@ -1,12 +1,39 @@
 {% extends "base.html" %}
 {% block content %}
-    <h3>{{ payload.name }}</h3>
-    <p>Public Key: {{ payload.public_key }}</p>
-    <p>Twitter: {{ payload.twitter }}</p>
-    <ul>
-        {% for sig in signatures %}
-            <li>{{ sig.signer_name }} {{ sig.signer_public_key }}</li>
-        {% endfor %}
-    </ul>
-    <div><a href="./{{ payload.public_key }}.json">Raw JSON</a></div>
+<div class="f2 mv2">{{ payload.name }}</div>
+<div class="f4 mv2">Public Key</div>
+<div class="f5 courier pa2 bg-near-white navy b mt1 br2">{{ payload.public_key }}</div>
+<div class="f4 mv2">Twitter</div>
+<div class="f5 courier pa2 bg-near-white navy b mt1 br2">
+    <a href="https://twitter.com/{{ payload.twitter }}">
+        {{ payload.twitter }}
+    </a>
+</div>
+<div class="bw2 bt mt3"></div>
+<div class="">
+    <div class="f4 mv3">Signatures</div>
+    {% for sig in signatures %}
+    <div class="mv3">
+        <div class="bg-light-green pa1 f6 navy courier">
+            <div class="">Name</div>
+            <div class="ml2 mb2">{{ sig.signer_name }}
+                {% if sig.signer_public_key == payload.public_key %}
+                    <b>[Self Signed]</b>
+                {% endif %}
+            </div>
+            <div class="">Type</div>
+            <div class="ml2 mb2">{{ sig.type }}</div>
+            <div class="">Public Key</div>
+            <div class="ml2 mb2 word-wrap f7"><i class="fa-solid fa-key"></i>{{ sig.signer_public_key }}</div>
+            <div class="">Signature</div>
+            <div class="ml2 word-wrap f7">
+                {{ sig.signature }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="flex flex-row justify-end mt3">
+    <a href="./{{ payload.public_key }}.json" class="pa2 w-20 bg-navy white">Raw JSON</a>
+</div>
 {% endblock %}

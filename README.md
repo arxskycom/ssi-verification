@@ -39,7 +39,7 @@ python main.py --help
 
 # generate keypairs for NY Times and Alice
 python main.py generate_keypair -n "NY Times" -o nytimes.priv.json
-python main.py generate_keypair -n "Alice Roberts" -o alice.priv.json
+python main.py generate_keypair -n "Alice Allison" -o alice.priv.json
 
 # Create object with Alice's public key and twitter handle
 # Note: if you don't have `jq` installed, you can just copy the public key from the file
@@ -51,6 +51,6 @@ python main.py sign -k alice.priv.json -i alice.to.sign.json -o alice.signed.jso
 # Sign the object with NY Times' private key
 python main.py sign -k nytimes.priv.json -i alice.signed.json -o alice.signed.json
 
-# Verify signature?
+# Verify signature(s)
 python main.py verify -i alice.signed.json
 ```

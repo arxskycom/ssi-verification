@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<head>
+  <title>Verifier</title>
+  <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body class="bg-light-gray flex flex-row justify-center">
+  <div class="flex-grow-1 mw6 flex flex-column justify-center">
+    <div class="ma3 pa3 w-full bg-light-green br2 shadow-3">
+    <div class="f1">Verifier</div>
+    <form>
+      <div class="flex flex-column mv3">
+        <label for="link" class="f4 mb1">Link</label>
+        <textarea class="pa2 bg-near-white f5 br2 courier"
+          type="text" id="link" name="link" 
+          required value="">dist/4JTwecLZTt8bqiyGxv2VGJR5NeX41wuvLJJLrsxmFN7v.json</textarea>
+        <button type="submit" class="pa2 bg-purple white bn br2 mt1">Verify Signed Certificate</button>
+      </div>
+    </form>
+    <div id="result" class="flex flex-column"></div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tweetnacl/1.0.3/nacl.min.js"></script>
+  <script src="./js/verifier.js"></script>
+  <script>
+    const form = document.querySelector('form');
+    const linkInput = document.querySelector('#link');
+    const resultDiv = document.querySelector('#result');
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const link = linkInput.value;
+
+      try {
+        const {payload, visited} = await verifyAndTraverse(link);
+        displayResult(payload, visited);
+      } catch (error) {
+        console.error(error);
+        displayError();
+      }
+    });
+    
+    function displayResult(payload, visited) {
+      resultDiv.innerHTML = '';
+      // const signedPayload = );
+
+      if (visited.length === 0) {
+        resultDiv.innerHTML = '<p>No objects visited.</p>';
+        return;
+      }
+      resultDiv.innerHTML = `
+        <div class="f4">Fetched Cert:</div>
+        <pre class="pa1 bg-light-blue f5 overflow-x-scroll br2 shadow-3">${JSON.stringify(JSON.parse(payload), null, 2)}</pre>
+        <div class="f4">Checked Signatures:</div>
+      `
+
+      visited.forEach((obj) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+        <div class="mt2 pa2 bg-light-gray br2">
+        <div>
+          <a href="./${obj.signer_public_key}.json">Raw</a> | 
+          <a href="./${obj.signer_public_key}.html">HTML</a>
+        </div>
+        <div>${obj.signer_name}</div>
+        <div class="courier navy">${obj.signer_public_key}</div>
+        <div class="bold navy">${obj.signer_type}</div>
+        ${obj.verified ? 
+          '<span class="b courier green f4">Verified</span>' : 
+          '<span class="b courier red f4">Not Verified</span>'}
+        `;
+        resultDiv.appendChild(row);
+      });
+    }
+
+    function displayError() {
+      resultDiv.innerHTML = '<p>An error occurred while verifying the signature.</p>';
+    }
+  </script>
+</body>
+</html>

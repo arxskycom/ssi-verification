@@ -2,12 +2,12 @@
 {% block content %}
     <h1>{{ title }}</h1>
     <div>
-        Certificates issued / signed by: <a href="./certs/{{root.public_key}}.html">{{ root.name }}</a>
+        Certificates issued / signed by: <a href="./{{root.public_key}}.html">{{ root.name }}</a>
     </div>
     <h1>Verified Certificates (VCs)</h1>
     <ul>
         {% for c in certs %}
-            <li><a href="./{{ c.payload.public_key }}.html">{{ c.payload.name }}</a></li>
+            <li><a href="./{{ c.public_key }}.html">{{ c.name }}</a></li>
         {% else %}
             <li>No certs yet!</li>
         {% endfor %}

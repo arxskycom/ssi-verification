@@ -45,14 +45,17 @@ if __name__ == "__main__":
     # generate cert pages
     cert_template = env.get_template('single.html')
     for cert in certs:
-        cert_html = cert_template.render(payload=cert['payload'], signatures=cert['signatures'])
-        with open(os.path.join(DIST_DIR, cert['payload']['public_key'] + '.html'), 'w') as f:
+        payload = json.loads(cert['payload'])
+        cert_html = cert_template.render(payload=payload, signatures=cert['signatures'])
+        with open(os.path.join(DIST_DIR, payload['public_key'] + '.html'), 'w') as f:
             f.write(cert_html)
-        with open(os.path.join(DIST_DIR, cert['payload']['public_key'] + '.json'), 'w') as f:
+        with open(os.path.join(DIST_DIR, payload['public_key'] + '.json'), 'w') as f:
             f.write(json.dumps(cert, indent=4))
 
     # generate list page
     list_template = env.get_template('list.html')
-    list_html = list_template.render(root=root, certs=certs)
+    list_html = list_template.render(
+        root=root,
+        certs=[json.loads(c['payload']) for c in certs])
     with open(os.path.join(DIST_DIR, 'index.html'), 'w') as f:
         f.write(list_html)
