@@ -54,3 +54,20 @@ python main.py sign -k nytimes.priv.json -i alice.signed.json -o alice.signed.js
 # Verify signature(s)
 python main.py verify -i alice.signed.json
 ```
+
+## End to End Example
+
+The following will generate keypairs, create objects to be signed, sign them, and verify the signatures.
+Then it will build some html pages to demonstrate how the signatures can be verified in a browser.
+
+
+`dist/` - directory with published example html files to traverse
+`example/` - directory with genereated keypairs, pre-signed public objects, and the final signed object
+
+Once generated, can navigate to `dist/index.html` to see the example in action. (run a local server for proper JS function).
+
+```
+./populate.sh  # will overwrite data in example/ and dist/
+cd dist
+python -m http.server
+```

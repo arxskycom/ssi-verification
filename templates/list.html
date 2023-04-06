@@ -5,11 +5,14 @@
         Certificates issued / signed by: <a href="./{{root.public_key}}.html">{{ root.name }}</a>
     </div>
     <h1>Verified Certificates (VCs)</h1>
-    <ul>
+    <div class="flex flex-column">
         {% for c in certs %}
-            <li><a href="./{{ c.public_key }}.html">{{ c.name }}</a></li>
+            <div class="mb2">
+                <a href="./{{ c.public_key }}.html">{{ c.name }}</a>
+                <div class="f5 courier black">{{c.public_key}}</div>
+            </div>
         {% else %}
-            <li>No certs yet!</li>
+            <div class="f4">No certs yet!</div>
         {% endfor %}
-    </ul>
+    </div>
 {% endblock %}
