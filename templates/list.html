@@ -1,16 +1,27 @@
+{% set bg="yellow" %}
 {% extends "base.html" %}
 {% block content %}
-    <h1>{{ title }}</h1>
-    <div>
-        Certificates issued / signed by: <a href="./{{root.public_key}}.html">{{ root.name }}</a>
+    <div class="f2">Verified Certificates (VCs)</div>
+    <div class="mb2 i">
+        Certificates issued / signed by: <a href="./{{root.public_key}}.html" class="pa1 bg-white-70 br2">{{ root.name }}</a>
     </div>
-    <h1>Verified Certificates (VCs)</h1>
     <div class="flex flex-column">
         {% for c in certs %}
-            <div class="mb2">
-                <a href="./{{ c.public_key }}.html">{{ c.name }}</a>
-                <div class="f5 courier black">{{c.public_key}}</div>
-            </div>
+            <a href="./{{ c.public_key }}.html" class="db black mb2 flex flex-row items-center bg-white-70 hover-bg-white-90 pa1 ph2 br2 no-underline">
+                <div>
+                    {% if c.type == 'organization' %}
+                        <i class="fa-solid fa-building mr2"></i>
+                    {% elif c.type == 'individual' %}
+                        <i class="fa-solid fa-user mr2"></i>
+                    {% else %}
+                        <i class="fa-solid fa-question mr2"></i>
+                    {% endif %}
+                </div>
+                <div>
+                    {{ c.name }}
+                    <div class="f6 courier black">{{c.public_key}}</div>
+                </div>
+            </a>
         {% else %}
             <div class="f4">No certs yet!</div>
         {% endfor %}

@@ -32,21 +32,24 @@ if __name__ == "__main__":
 
     # generate root pages
     root_template = env.get_template('single.html')
-    root_html = root_template.render(payload=root, signatures=[])
+    root_payload = json.loads(root['payload'])
+    root_html = root_template.render(payload=root_payload, signatures=root['signatures'])
     with open(os.path.join(DIST_DIR, 'root.html'), 'w') as f:
         f.write(root_html)
-    with open(os.path.join(DIST_DIR, root['public_key'] + '.html'), 'w') as f:
+    with open(os.path.join(DIST_DIR, root_payload['public_key'] + '.html'), 'w') as f:
         f.write(root_html)
     with open(os.path.join(DIST_DIR, 'root.json'), 'w') as f:
-        f.write(json.dumps(root, indent=4))
-    with open(os.path.join(DIST_DIR, root['public_key'] + '.json'), 'w') as f:
-        f.write(json.dumps(root, indent=4))
+        f.write(json.dumps(root_payload, indent=4))
+    with open(os.path.join(DIST_DIR, root_payload['public_key'] + '.json'), 'w') as f:
+        f.write(json.dumps(root_payload, indent=4))
 
     # generate cert pages
     cert_template = env.get_template('single.html')
     for cert in certs:
         payload = json.loads(cert['payload'])
-        cert_html = cert_template.render(payload=payload, signatures=cert['signatures'])
+        cert_html = cert_template.render(
+            payload=payload, 
+            signatures=cert['signatures'])
         with open(os.path.join(DIST_DIR, payload['public_key'] + '.html'), 'w') as f:
             f.write(cert_html)
         with open(os.path.join(DIST_DIR, payload['public_key'] + '.json'), 'w') as f:
@@ -55,7 +58,7 @@ if __name__ == "__main__":
     # generate list page
     list_template = env.get_template('list.html')
     list_html = list_template.render(
-        root=root,
+        root=root_payload,
         certs=[json.loads(c['payload']) for c in certs])
     with open(os.path.join(DIST_DIR, 'index.html'), 'w') as f:
         f.write(list_html)

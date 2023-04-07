@@ -1,6 +1,12 @@
+{% set bg="light-blue" %}
 {% extends "base.html" %}
 {% block content %}
-<div class="f2 mv2">{{ payload.name }}</div>
+<div class="f2 mv2 flex flex-row items-center">
+    {{ payload.name }}
+    {% if payload.is_root %}
+        <a href="./root.html" class="f4 mv2 pa1 ph2 br-pill bg-dark-green white no-underline courier ml2 hover-bg-green">root</a>
+    {% endif %}
+</div>
 <div class="f4 mv2">Public Key</div>
 <div class="f5 courier pa2 bg-near-white navy b mt1 br2">{{ payload.public_key }}</div>
 <div class="f4 mv2">Twitter</div>
@@ -14,26 +20,44 @@
     <div class="f4 mv3">Signatures</div>
     {% for sig in signatures %}
     <div class="mv3">
-        <div class="bg-light-green pa1 f6 navy courier">
-            <div class="">Name</div>
-            <div class="ml2 mb2">{{ sig.signer_name }}
+        <div class="bg-light-green pa2 f6 navy br2">
+            <div class="f4 mt2">
+                <a href="./{{ sig.signer_public_key }}.html" class="no-underline">
+                <i class="fa-solid fa-link f5"></i>
+                {{ sig.signer_name }}
                 {% if sig.signer_public_key == payload.public_key %}
-                    <b>[Self Signed]</b>
+                    <span class="ml2 courier f6 b i  purple">[Self Signed]</span>
+                {% endif %}
+                </a>
+            </div>
+            <div class="mt2">Type</div>
+            <div class="flex flex-row items-center pa1 pl2 word-wrap f7 ba br2 bg-white-70 courier">
+                {% if sig.type == 'organization' %}
+                    <i class="fa-solid fa-building mr2"></i>
+                    Organization
+                {% elif sig.type == 'individual' %}
+                    <i class="fa-solid fa-user mr2"></i>
+                    Individual
+                {% else %}
+                    <!-- <i class="fa-solid fa-question mr2"></i> -->
+                    {{ sig.type }}
                 {% endif %}
             </div>
-            <div class="">Type</div>
-            <div class="ml2 mb2">{{ sig.type }}</div>
-            <div class="">Public Key</div>
-            <div class="ml2 mb2 word-wrap f7"><i class="fa-solid fa-key"></i>{{ sig.signer_public_key }}</div>
-            <div class="">Signature</div>
-            <div class="ml2 word-wrap f7">
-                {{ sig.signature }}
+            <div class="mt2">Public Key</div>
+            <div class="flex flex-row items-center pa1 pl2 word-wrap f7 ba br2 bg-white-70 courier">
+                <i class="fa-solid fa-key mr2"></i>
+                <div>{{ sig.signer_public_key }}</div>
+            </div>
+            <div class="mt2">Signature</div>
+            <div class="flex flex-row items-center pa1 pl2 word-wrap f7 ba br2 bg-white-70 courier">
+                <i class="fa-solid fa-lock mr2"></i>
+                <div>{{ sig.signature }}</div>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
 <div class="flex flex-row justify-end mt3">
-    <a href="./{{ payload.public_key }}.json" class="pa2 w-20 bg-navy white">Raw JSON</a>
+    <a href="./{{ payload.public_key }}.json" class="pa2 w-30 bg-navy white tc">Raw JSON</a>
 </div>
 {% endblock %}

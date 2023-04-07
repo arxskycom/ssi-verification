@@ -33,13 +33,6 @@ def generate_keypair(output, name, type):
     return serialized_keypair
 
 
-# def prepare_public_cert(name):
-#     serialized_keypair = load_object_from_file(f'{name}.private.json')
-#     del serialized_keypair['private_key']
-#     save_object_to_file(f'{name}.public.json', serialized_keypair)
-#     return serialized_keypair
-
-
 def sign_object(key_path, object_to_sign_path, output_path):
     obj = load_object_from_file(object_to_sign_path)
     if "signatures" in obj and "payload" in obj: # been already signed so we'll be adding signatures

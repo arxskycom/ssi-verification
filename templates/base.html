@@ -7,8 +7,10 @@
 </head>
 <body class="bg-light-gray flex flex-row justify-center">
   <div class="flex-grow-1 mw6 flex flex-column justify-center">
-    <div class="ma3 pa3 w-full bg-light-blue br2 shadow-3">
-      <div class="f1">{{ title }}</div>
+    <div class="ma3 pa3 w-full bg-{{ bg }} br2 shadow-3">
+      <a href="./index.html" class="no-underline">
+        <div class="f6 mv2">Index / List</div>
+      </a>
       {% block content %}{% endblock %}
     </div>
     <div class="flex-grow-1"></div>

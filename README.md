@@ -38,12 +38,16 @@ source venv/bin/activate
 python main.py --help
 
 # generate keypairs for NY Times and Alice
-python main.py generate_keypair -n "NY Times" -o nytimes.priv.json
+python main.py generate_keypair -n "NY Times" -o nytimes.priv.json -t organization
 python main.py generate_keypair -n "Alice Allison" -o alice.priv.json
 
 # Create object with Alice's public key and twitter handle
 # Note: if you don't have `jq` installed, you can just copy the public key from the file
-echo '{"name": "Alice Allison", "twitter": "@alice", "public_key": '`jq .public_key alice.priv.json`'}' > alice.to.sign.json
+echo '{
+    "name": "Alice Allison",
+    "twitter": "@alice",
+    "public_key": '`jq .public_key alice.priv.json`'
+}' > alice.to.sign.json
 
 # Sign the object with Alice's private key
 python main.py sign -k alice.priv.json -i alice.to.sign.json -o alice.signed.json
@@ -67,7 +71,7 @@ Then it will build some html pages to demonstrate how the signatures can be veri
 Once generated, can navigate to `dist/index.html` to see the example in action. (run a local server for proper JS function).
 
 ```
-./populate.sh  # will overwrite data in example/ and dist/
+./example.sh  # will overwrite data in example/ and dist/
 cd dist
 python -m http.server
 ```
