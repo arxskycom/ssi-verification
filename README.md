@@ -13,18 +13,18 @@ The driving principle is public key cryptography, specifically signatures.
 1. The journalist sends this object to the Times.
 1. The Times signs this object with their private key.
 
-The final signed object can be used to verify that the Times trusts the journalist.
+The final signed object can be used to verify a relationship between the Times and the journalist.
 
-## Using the Repo
+# Using this Repo
 
-### Environment Setup
+## Environment Setup
 
 1. Install python virtuelenv of choice (only first time):
 
 ```
-pip install virtualenv
-virtuelenv -p python3 venv
-source venv/bin/activate && pip install -r requirements.txt
+pip3 install virtualenv
+virtualenv -p python3 venv
+source venv/bin/activate && pip3 install -r requirements.txt
 ```
 
 2. Initialize the virtual environment (everytime you visit this project):
@@ -32,7 +32,9 @@ source venv/bin/activate && pip install -r requirements.txt
 source venv/bin/activate
 ```
 
-### Running the Code
+*Note: `jq` is used for one of the steps below and in the `example.sh` script*
+
+## Running the Code
 
 ```
 python main.py --help

@@ -39,9 +39,9 @@ if __name__ == "__main__":
     with open(os.path.join(DIST_DIR, root_payload['public_key'] + '.html'), 'w') as f:
         f.write(root_html)
     with open(os.path.join(DIST_DIR, 'root.json'), 'w') as f:
-        f.write(json.dumps(root_payload, indent=4))
+        f.write(json.dumps(root, indent=4))
     with open(os.path.join(DIST_DIR, root_payload['public_key'] + '.json'), 'w') as f:
-        f.write(json.dumps(root_payload, indent=4))
+        f.write(json.dumps(root, indent=4))
 
     # generate cert pages
     cert_template = env.get_template('single.html')
