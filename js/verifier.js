@@ -14,7 +14,7 @@ async function verifyAndTraverse(link, visited = []) {
     const { signatures, payload } = json;
     // Verify the signature using the signer's public key
     for(let i = 0; i < signatures.length; i++) {
-      const { signature, signer_public_key, signer_name, signer_type } = signatures[i];
+      const { signature, signer_public_key, signer_name, type } = signatures[i];
       const encoder = new TextEncoder();
       const signatureBytes = from_b58(signature);
       const publicKeyBytes = from_b58(signer_public_key);
@@ -22,9 +22,10 @@ async function verifyAndTraverse(link, visited = []) {
       const verified = nacl.sign.detached.verify(payloadEncoded, signatureBytes, publicKeyBytes);
       visited.push({
         link,
+        signature,
         signer_name,
         signer_public_key,
-        signer_type,
+        signer_type: type,
         verified,
       });
     }
