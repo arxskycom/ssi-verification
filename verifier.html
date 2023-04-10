@@ -4,18 +4,21 @@
 <head>
   <title>Verifier</title>
   <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/tachyons-word-break@3.0.5/css/tachyons-word-break.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body class="bg-light-gray flex flex-row justify-center">
   <div class="flex-grow-1 mw6 flex flex-column justify-center">
-    <div class="ma3 pa3 w-full bg-light-green br2 shadow-3">
+    <div class="ma3 pa3 w-full bg-light-silver br2 shadow-3">
     <div class="f1">Verifier</div>
     <form>
       <div class="flex flex-column mv3">
         <label for="link" class="f4 mb1">Link</label>
         <textarea class="pa2 bg-near-white f5 br2 courier"
           type="text" id="link" name="link" 
-          required value="">dist/4JTwecLZTt8bqiyGxv2VGJR5NeX41wuvLJJLrsxmFN7v.json</textarea>
+          required value="">HeKpWRTUve7WHfSFZkCasDNVQMr2kJ83L8LGBWzuNCmy.json</textarea>
         <button type="submit" class="pa2 bg-purple white bn br2 mt1">Verify Signed Certificate</button>
       </div>
     </form>
@@ -49,27 +52,58 @@
         resultDiv.innerHTML = '<p>No objects visited.</p>';
         return;
       }
+      const parsed = JSON.parse(payload);
       resultDiv.innerHTML = `
         <div class="f4">Fetched Cert:</div>
-        <pre class="pa1 bg-light-blue f5 overflow-x-scroll br2 shadow-3">${JSON.stringify(JSON.parse(payload), null, 2)}</pre>
+        <div class="flex flex-row">
+          <a href="${parsed['public_key']}.html" class="mr2 bg-blue white pa1">HTML</a>
+          <a href="${parsed['public_key']}.json" class="mr2 bg-blue white pa1">Raw JSON</a>
+        </div>
+        <pre class="pa1 bg-light-blue f5 overflow-x-scroll br2 shadow-3">${JSON.stringify(parsed, null, 2)}</pre>
         <div class="f4">Checked Signatures:</div>
       `
 
       visited.forEach((obj) => {
+        console.log(obj);
         const row = document.createElement('tr');
+        const self_signed = obj.signer_public_key === parsed.public_key;
         row.innerHTML = `
-        <div class="mt2 pa2 bg-light-gray br2">
-        <div>
-          <a href="./${obj.signer_public_key}.json">Raw</a> | 
-          <a href="./${obj.signer_public_key}.html">HTML</a>
-        </div>
-        <div>${obj.signer_name}</div>
-        <div class="courier navy">${obj.signer_public_key}</div>
-        <div class="bold navy">${obj.signer_type}</div>
-        ${obj.verified ? 
-          '<span class="b courier green f4">Verified</span>' : 
-          '<span class="b courier red f4">Not Verified</span>'}
-        `;
+        <div class="bg-light-green pa2 f6 navy br2">
+            <div class="f4 mt2">
+                <a href="./${obj.signer_public_key}.html" class="no-underline">
+                <i class="fa-solid fa-link f5"></i>
+                ${obj.signer_name}
+                ${self_signed && `<span class="ml2 courier f6 b i purple">[Self Signed]</span>`}
+                </a>
+            </div>
+            <div class="mt2">Type</div>
+            <div class="flex flex-row items-center pa1 pl2 word-wrap f7 ba br2 bg-white-70 courier">
+                ${obj.signer_type == 'organization' ?
+                    `<i class="fa-solid fa-building mr2"></i>
+                    Organization` :
+                    obj.signer_type == 'individual' ?
+                    `<i class="fa-solid fa-user mr2"></i>
+                    Individual` : 
+                    `<i class="fa-solid fa-question mr2"></i>
+                    ${obj.signer_type }`}
+            </div>
+            <div class="mt2">Public Key</div>
+            <div class="flex flex-row items-center pa1 pl2 word-wrap f7 ba br2 bg-white-70 courier">
+                <i class="fa-solid fa-key mr2"></i>
+                <div class="word-wrap">${obj.signer_public_key}</div>
+            </div>
+            <div class="mt2">Signature</div>
+            <div class="flex flex-row items-center pa1 pl2 word-wrap f7 ba br2 bg-white-70 courier">
+                <i class="fa-solid fa-lock mr2"></i>
+                <div class="word-wrap">${obj.signature}</div>
+            </div>
+            <div class="flex flex-row justify-center mt2">
+              ${obj.verified ? 
+                '<div class="b courier green f4 bg-white pa2 ba bw2">Verified</div>' : 
+                '<div class="b courier red f4 bg-white pa2 ba bw2">Not Verified</div>'}
+            </div>
+        </div>`
+        ;
         resultDiv.appendChild(row);
       });
     }
