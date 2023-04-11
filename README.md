@@ -1,17 +1,19 @@
 # Verification Prototype
 
-This repo is meant to demonstrate how digital trusted relationship can be established.
+This repo is meant to demonstrate how trusted relationship (verification) can be established without relying on platforms / third parties.
 The driving principle is public key cryptography, specifically signatures.
 
-## Example Flow
+## How it Works
 
-1. NY Times creates a key pair (public and private).
-1. It publishes the public key on its website, e.g. nytimes.com/publickey.txt.
-1. A journalist that works for the Times creates a key pair (public and private).
-1. The journalist creates an object with their public key, and any other information they wish to share (e.g. twitter handle)
-1. The journalist signs this object with their private key.
-1. The journalist sends this object to the Times.
-1. The Times signs this object with their private key.
+Let’s say Alice is on Twitter and wants to prove to Bob that she is a NY Times reporter.
+
+1. The NY Times will create a signing key pair, and publish their public key on their website.
+1. Alice will also create a key pair.
+1. Alice will create a document that includes her public key, name, twitter handle, position at the NYTimes and any other information (i.e. “claims”), Alice will self sign this document.
+1. Alice will send this to the NY Times, where the NY Times will verify the validity of Alice’s relationship, if valid the NY Times will sign this document.
+1. The NY Times will publish this signed document or send it back to Alice to publish
+1. Alice will then link to the signed document from her Twitter bio.
+1. Bob can now verify that Alice works at the NY Times by following the links and verifying the signatures and information in the signed document.
 
 The final signed object can be used to verify a relationship between the Times and the journalist.
 
@@ -47,7 +49,8 @@ python main.py generate_keypair -n "Alice Allison" -o alice.priv.json
 # Note: if you don't have `jq` installed, you can just copy the public key from the file
 echo '{
     "name": "Alice Allison",
-    "twitter": "@alice",
+    "twitter": "@aliceTheReporter",
+    "position": "Reporter",
     "public_key": '`jq .public_key alice.priv.json`'
 }' > alice.to.sign.json
 
