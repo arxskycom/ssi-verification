@@ -1,4 +1,4 @@
-# Verification Prototype
+# Self Sovereign Verification
 
 This repo is meant to demonstrate how trusted relationship (verification) can be established without relying on platforms / third parties.
 The driving principle is public key cryptography, specifically signatures.
