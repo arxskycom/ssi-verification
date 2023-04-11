@@ -45,5 +45,7 @@ python main.py verify -i example/carol.signed.json
 # generate html files
 rm -rf dist
 python to_dist.py -r example/root.signed.json -c example/*.signed.json
+
+# copy verifier files
 cp verifier.html dist/verifier.html
 cp -r js dist/

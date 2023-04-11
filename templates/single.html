@@ -35,12 +35,9 @@
                 {% if sig.type == 'organization' %}
                     <i class="fa-solid fa-building mr2"></i>
                     Organization
-                {% elif sig.type == 'individual' %}
+                {% else %}
                     <i class="fa-solid fa-user mr2"></i>
                     Individual
-                {% else %}
-                    <!-- <i class="fa-solid fa-question mr2"></i> -->
-                    {{ sig.type }}
                 {% endif %}
             </div>
             <div class="mt2">Public Key</div>

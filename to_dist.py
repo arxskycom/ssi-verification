@@ -14,9 +14,9 @@ if __name__ == "__main__":
         description='Accept a root public key and a list of ' +
         'signed objects and generate several HTML files based on templates.')
     parser.add_argument("-r", "--root-public-key", type=str,
-                        help="The root public key", required=True)
+                        help="The root public key to publish", required=True)
     parser.add_argument("-c", "--certs", type=str, nargs='+',
-                        help="The list of signed objects", required=True)
+                        help="The list of signed objects to publish", required=True)
     
     args = parser.parse_args()
 

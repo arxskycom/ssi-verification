@@ -16,14 +16,14 @@
       <a href="./index.html" class="no-underline f6 ml2 bg-navy white hover-light-blue pa1 br2 ph2">Index / List</a>
       <a href="./verifier.html" class="no-underline f6 ml2  bg-navy white hover-light-blue pa1 br2 ph2">Verifier</a>
     </div>
-    <div class="f1">Verifier</div>
+    <div class="f2">Verifier</div>
     <form>
       <div class="flex flex-column mv3">
         <label for="link" class="f4 mb1">Raw JSON Link</label>
         <textarea class="pa2 bg-near-white f5 br2 courier"
           type="text" id="link" name="link" 
-          required value="">root.json</textarea>
-        <button type="submit" class="pa2 bg-dark-green white bn br2 mt1 pointer hover-light-green">Verify Signed Certificate</button>
+          required value=""></textarea>
+        <button type="submit" class="pa2 bg-dark-green white bn br2 mt1 pointer hover-light-green">Verify Signed Credential</button>
       </div>
     </form>
     <div id="result" class="flex flex-column"></div>
@@ -33,6 +33,7 @@
   <script>
     const form = document.querySelector('form');
     const linkInput = document.querySelector('#link');
+    linkInput.innerHTML = document.location.href.split('/').slice(0, -1).join('/') + '/root.json';
     const resultDiv = document.querySelector('#result');
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -59,7 +60,7 @@
       const parsed = JSON.parse(payload);
       resultDiv.innerHTML = `
         <div class="flex flex-row justify-between items-center">
-          <div class="f4">Fetched Cert</div>
+          <div class="f4">Fetched Credential</div>
           <div>
             <a href="${parsed['public_key']}.html" class="ml1 bg-purple white pa1 ph2 no-underline hover-light-pink br2">HTML</a>
             <a href="${parsed['public_key']}.json" class="ml1 bg-purple white pa1 ph2 no-underline hover-light-pink br2">Raw JSON</a>
@@ -114,7 +115,7 @@
     }
 
     function displayError() {
-      resultDiv.innerHTML = '<p>An error occurred while verifying the signature.</p>';
+      resultDiv.innerHTML = '<p>An error occurred while trying to get the credential or while trying to verify signatures.</p>';
     }
   </script>
 </body>

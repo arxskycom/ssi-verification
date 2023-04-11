@@ -125,6 +125,7 @@ if __name__ == "__main__":
 
     if args.command == "generate_keypair":
         serialized_keypair = generate_keypair(args.output, args.name, args.type)
+        serialized_keypair['private_key'] = '****************REDACTED****************'
         print(json.dumps(serialized_keypair, indent=4))
     elif args.command == "sign":
         serialized_signed_payload_json = sign_object(args.key_path, args.input, args.output)

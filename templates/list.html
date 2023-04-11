@@ -1,9 +1,9 @@
 {% set bg="yellow" %}
 {% extends "base.html" %}
 {% block content %}
-    <div class="f2">Verified Certificates (VCs)</div>
-    <div class="mb2 i">
-        Certificates issued / signed by: <a href="./{{root.public_key}}.html" class="pa1 bg-white-70 br2">{{ root.name }}</a>
+    <div class="f2">Verified Credentials (VCs)</div>
+    <div class="mv3 i">
+        Credentials issued / signed by: <a href="./{{root.public_key}}.html" class="pa1 bg-white-70 br2">{{ root.name }}</a>
     </div>
     <div class="flex flex-column">
         {% for c in certs %}
@@ -11,10 +11,8 @@
                 <div>
                     {% if c.type == 'organization' %}
                         <i class="fa-solid fa-building mr2"></i>
-                    {% elif c.type == 'individual' %}
-                        <i class="fa-solid fa-user mr2"></i>
                     {% else %}
-                        <i class="fa-solid fa-question mr2"></i>
+                        <i class="fa-solid fa-user mr2"></i>
                     {% endif %}
                 </div>
                 <div>
@@ -23,7 +21,7 @@
                 </div>
             </a>
         {% else %}
-            <div class="f4">No certs yet!</div>
+            <div class="f4">No credentials yet!</div>
         {% endfor %}
     </div>
 {% endblock %}
