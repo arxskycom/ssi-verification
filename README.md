@@ -71,6 +71,7 @@ Then it will build some html pages to demonstrate how the signatures can be veri
 
 
 `dist/` - directory with published example html files to traverse
+
 `example/` - directory with genereated keypairs, pre-signed public objects, and the final signed object
 
 Once generated, can navigate to `dist/index.html` to see the example in action. (run a local server for proper JS function).
