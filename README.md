@@ -21,7 +21,7 @@ The final signed object can be used to verify a relationship between the Times a
 
 ## Environment Setup
 
-1. Install python virtuelenv of choice (only first time):
+1. Install python virtualenv of choice (only first time):
 
 ```
 pip3 install virtualenv
